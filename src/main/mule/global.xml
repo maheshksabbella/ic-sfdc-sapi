@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+	  <http:listener-config name="ic-sfdc-sapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="${https.port}"/>
+    </http:listener-config>
+    <apikit:config name="ic-sfdc-sapi-config" api="resource::5330f21a-4589-41f2-826c-fc333ad72f2a:ic-sfdc-sapi:1.0.0:raml:zip:ic-sfdc-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="0cc4e600-b026-4f66-866d-97ef9798e434" >
+		<salesforce:basic-connection username="${secure::Salesforce.username}" password="${secure::Salesforce.password}" securityToken="${secure::Salesforce.securitytoken}"/>
+	</salesforce:sfdc-config>
+	<configuration-properties doc:name="Configuration properties" doc:id="0a1ed937-633b-426a-95e6-737734df5f0d" file="properties\application.yaml" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="21c175bc-b39f-4c5c-bae4-5acc00c0b88c" file="properties/config-${mule.env}.yaml" key="${mule.key}" />
+	<global-property doc:name="Global Property" doc:id="5f8f85d1-54d6-43f3-925a-a92c93e469f4" name="mule.env" value="local" />
+	<global-property doc:name="Global Property" doc:id="597a4e80-b188-4dd6-94ed-0ebaa506280c" name="mule.key" value="password12345678" />
+	<configuration doc:name="Configuration" doc:id="145b95ef-b6ac-4da1-a08c-7d33710d3370" defaultErrorHandler-ref="Error_Handler" />
+	<api-gateway:autodiscovery apiId="${api.id}" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="c3ed1f36-6285-46c6-889d-efa7b5411ab3" flowRef="ic-sfdc-sapi-main" />
+</mule>

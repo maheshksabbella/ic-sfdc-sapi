@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+  
+    <flow name="ic-sfdc-sapi-main">
+        <http:listener config-ref="ic-sfdc-sapi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="ic-sfdc-sapi-config" />
+		<error-handler ref="Error_Handler" />
+    </flow>
+    <flow name="ic-sfdc-sapi-console">
+        <http:listener config-ref="ic-sfdc-sapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="ic-sfdc-sapi-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform doc:name="Transform Message">
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="put:\case\(id):application\json:ic-sfdc-sapi-config" doc:id="4bdeb201-01a4-4a6a-9676-eafc36b6b141">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Calling Put Flow" doc:id="ceab7c72-8ada-4800-bb67-38676d2e12b1" name="putCaseFlow"/>
+    </flow>
+    <flow name="delete:\case\(id):ic-sfdc-sapi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Calling Delete Flow" doc:id="c392fc3c-bab6-4f97-80a2-fc48c9e12aaf" name="deleteCaseFlow"/>
+    </flow>
+    <flow name="get:\case:ic-sfdc-sapi-config">
+        <flow-ref doc:name="Calling Get Flow" doc:id="aa0b1f89-e037-4dc0-951a-23de08b8a953" name="getCaseFlow"/>
+    </flow>
+    <flow name="get:\case\(id):ic-sfdc-sapi-config">
+        <ee:transform doc:name="Transform Message">
+            <ee:variables>
+                <ee:set-variable variableName="id">attributes.uriParams.'id'</ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <flow-ref doc:name="Calling Get By Id Flow" doc:id="7ff143b0-ab19-40bc-9916-b4e6d2c19f08" name="getCaseFlowById"/>
+    </flow>
+    <flow name="post:\case:application\json:ic-sfdc-sapi-config">
+        <flow-ref doc:name="Calling Post Flow" doc:id="0609c0b4-efea-4ab7-9288-3bf06bcef79f" name="createCaseFow"/>
+    </flow>
+</mule>
