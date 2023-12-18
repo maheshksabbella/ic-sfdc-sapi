@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.mycompany</groupId>
-	<artifactId>ic-sfdc-case-sapi</artifactId>
+	<artifactId>ic-sfdc-sapi</artifactId>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
