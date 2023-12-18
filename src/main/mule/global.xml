@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
 http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
 	  <http:listener-config name="ic-sfdc-sapi-httpListenerConfig">
-        <http:listener-connection host="0.0.0.0" port="${https.port}"/>
+        <http:listener-connection host="0.0.0.0" port="${http.port}"/>
     </http:listener-config>
     <apikit:config name="ic-sfdc-sapi-config" api="resource::5330f21a-4589-41f2-826c-fc333ad72f2a:ic-sfdc-sapi:1.0.0:raml:zip:ic-sfdc-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
 	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="0cc4e600-b026-4f66-866d-97ef9798e434" >

@@ -42,7 +42,8 @@
       <workers>1</workers>
       <workerType>MICRO</workerType>
       <properties>
-        <key>value</key>
+          <anypoint.platform.client_id>e259f31c0d6041a8a5a7d22b25a23ebc</anypoint.platform.client_id>
+	      <anypoint.platform.client_secret>0B6FbD002eeD4C48AAe294f4f7C26c8d</anypoint.platform.client_secret>
       </properties>
     </cloudHubDeployment>
 				</configuration>
