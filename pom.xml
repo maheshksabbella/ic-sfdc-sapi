@@ -4,6 +4,8 @@
 
 	<groupId>com.mycompany</groupId>
 	<artifactId>ic-sfdc-sapi</artifactId>
+	<username>mahesh_16122023</username>
+	<password>Mahesh@667575</password>
 	<version>1.0.0</version>
 	<packaging>mule-application</packaging>
 
